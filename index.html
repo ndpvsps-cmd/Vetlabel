@@ -140,15 +140,18 @@
       repeating-linear-gradient(45deg, var(--surface-2) 0 10px, var(--surface) 10px 20px);
     overflow:auto;
   }
-  .sheet{
-    background:#fff; color:#20101A; box-shadow:0 2px 6px rgba(180,16,106,.12), 0 14px 34px rgba(180,16,106,.16);
+  .sheet-page{
+    background:#fff; box-shadow:0 2px 6px rgba(180,16,106,.12), 0 14px 34px rgba(180,16,106,.16);
     position:relative; flex:none;
   }
-  .sheet-accentbar{ position:absolute; inset:0 0 auto 0; height:5.5mm; background:var(--warn); }
+  .sheet{
+    background:#fff; color:#20101A; position:absolute; top:0; left:0; box-sizing:border-box;
+    border:2.4mm double var(--warn); border-radius:3mm;
+  }
   .sheet-badge{
-    position:absolute; top:11mm; left:50%; transform:translateX(-50%);
-    width:15mm; height:15mm; border-radius:50%; background:var(--warn);
-    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:9mm;
+    position:absolute; top:9mm; left:50%; transform:translateX(-50%);
+    width:14mm; height:14mm; border-radius:50%; background:#fff; border:1.1mm solid var(--warn);
+    display:flex; align-items:center; justify-content:center; color:var(--warn); font-weight:800; font-size:8mm;
     font-family:'Sarabun',sans-serif;
   }
   .sheet-body{
@@ -222,22 +225,22 @@
   .med-sheet{
     width:70mm; height:50mm; background:#fff; color:#20101A;
     box-shadow:0 2px 6px rgba(180,16,106,.12), 0 14px 34px rgba(180,16,106,.16);
-    padding:2.3mm 3mm; display:flex; flex-direction:column; gap:0.65mm;
+    padding:2mm 2.8mm; display:flex; flex-direction:column; gap:0.5mm;
     font-family:'Sarabun',sans-serif;
     position:absolute; top:0; left:0; transform-origin:top left;
   }
-  .med-h{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:2.4mm; text-align:center; line-height:1.1; color:#B4106A; }
+  .med-h{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:2.7mm; text-align:center; line-height:1.15; color:#B4106A; }
   .med-rule{ border-top:0.3mm solid #F3C9DE; margin:0.2mm 0; }
-  .med-row{ display:flex; gap:1.5mm; font-size:2.3mm; line-height:1.25; }
+  .med-row{ display:flex; gap:1.5mm; font-size:2.6mm; line-height:1.22; }
   .med-row .k{ color:#9C6E88; flex:none; }
   .med-row .v{ font-weight:600; word-break:break-word; }
-  .med-drug{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:3.1mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
-  .med-dose{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:2.8mm; text-align:center; line-height:1.2; color:#20101A; }
-  .med-note{ font-size:2.5mm; font-weight:600; color:#3a2530; line-height:1.25; }
-  .med-timing{ font-size:2mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
+  .med-drug{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:3.5mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
+  .med-dose{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:3.2mm; text-align:center; line-height:1.18; color:#20101A; }
+  .med-note{ font-size:2.7mm; font-weight:600; color:#3a2530; line-height:1.25; }
+  .med-timing{ font-size:2.3mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
   .med-timing .t-on{ font-weight:700; color:#B4106A; }
   .med-timing .t-off{ color:#3a2530; }
-  .med-qty-corner{ position:absolute; bottom:1.2mm; right:1.8mm; font-size:1.7mm; color:#9C6E88; font-weight:500; }
+  .med-qty-corner{ position:absolute; bottom:1.2mm; right:1.8mm; font-size:1.9mm; color:#9C6E88; font-weight:500; }
 
   .queue-box{ padding:16px; border-top:1px solid var(--border); }
   .queue-item{
@@ -305,8 +308,8 @@
       <div class="card">
         <div class="editor-toolbar">
           <div class="chip-row">
-            <button class="chip active" id="sizeHalfBtn" onclick="setSize('half')">ครึ่ง A4 แนวนอน · 210×148 มม.</button>
-            <button class="chip" id="sizeFullBtn" onclick="setSize('full')">A4 แนวนอน · 297×210 มม.</button>
+            <button class="chip active" id="sizeHalfBtn" onclick="setSize('half')">ครึ่ง A4 · พิมพ์บน A4 แนวตั้ง (ครึ่งบน)</button>
+            <button class="chip" id="sizeFullBtn" onclick="setSize('full')">A4 เต็มแผ่น แนวนอน · 297×210 มม.</button>
           </div>
           <div style="display:flex; gap:8px;">
             <button class="btn btn-ghost btn-sm" onclick="resetWarnText()">↺ คืนค่าเดิม</button>
@@ -334,14 +337,15 @@
           <div class="emoji-row" id="emojiPaletteWarn"></div>
         </div>
         <div class="preview-stage">
-          <div class="sheet size-half" id="warnSheet">
-            <div class="sheet-accentbar"></div>
-            <div class="sheet-badge">!</div>
-            <div class="sheet-body" id="warnBody" contenteditable="true" spellcheck="false"></div>
-            <div class="sheet-foot" id="warnFoot">โรงพยาบาลสัตว์ มหาวิทยาลัยขอนแก่น</div>
+          <div class="sheet-page" id="warnPage">
+            <div class="sheet size-half" id="warnSheet">
+              <div class="sheet-badge">!</div>
+              <div class="sheet-body" id="warnBody" contenteditable="true" spellcheck="false"></div>
+              <div class="sheet-foot" id="warnFoot">โรงพยาบาลสัตว์ มหาวิทยาลัยขอนแก่น</div>
+            </div>
           </div>
         </div>
-        <p class="editor-hint">แตะข้อความในป้ายเพื่อแก้ไขจุดเว้นว่าง (เช่น เวลา) ก่อนพิมพ์ได้โดยตรง</p>
+        <p class="editor-hint">แตะข้อความในป้ายเพื่อแก้ไขจุดเว้นว่าง (เช่น เวลา) ก่อนพิมพ์ได้โดยตรง — โหมด "ครึ่ง A4" จะพิมพ์บนกระดาษ A4 แนวตั้งทั้งแผ่น โดยข้อมูลอยู่ครึ่งบนเท่านั้น
       </div>
     </div>
   </div>
@@ -557,7 +561,7 @@ function switchTab(name){
   document.getElementById('tabBtnWarn').classList.toggle('active', name==='warn');
   document.getElementById('tabBtnMed').classList.toggle('active', name==='med');
   if(name==='med') applyMedPreviewDims();
-  else applySheetDims(document.getElementById('warnSheet'), activeSize);
+  else applySheetDims(activeSize);
 }
 
 /* Keep the on-screen 70x50mm preview scaled up for legibility, but reserve
@@ -664,19 +668,32 @@ function setSize(size){
   const sheet = document.getElementById('warnSheet');
   sheet.classList.toggle('size-half', size==='half');
   sheet.classList.toggle('size-full', size==='full');
-  applySheetDims(sheet, size);
+  applySheetDims(size);
 }
-function applySheetDims(sheetEl, size){
-  const dims = size==='half' ? {w:210,h:148} : {w:297,h:210};
+/* "half" prints on a full portrait A4 sheet with content only in the top
+   half (so it drops straight into a normal A4 tray); "full" is a landscape
+   A4 page filled edge to edge. contentDims is the printed message area,
+   pageDims is the physical paper the print job targets. */
+function contentDimsFor(size){ return size==='half' ? {w:210,h:148.5} : {w:297,h:210}; }
+function pageDimsFor(size){ return size==='half' ? {w:210,h:297} : {w:297,h:210}; }
+function applySheetDims(size){
+  const contentDims = contentDimsFor(size);
+  const pageDims = pageDimsFor(size);
   const mmToPx = 3.7795275591;
   const stageWidth = Math.min(document.querySelector('.preview-stage').clientWidth - 40, 620);
   const stageHeight = Math.max(190, window.innerHeight * 0.29);
-  const scale = Math.min(1, stageWidth / (dims.w * mmToPx), stageHeight / (dims.h * mmToPx));
-  sheetEl.style.width = dims.w+'mm';
-  sheetEl.style.height = dims.h+'mm';
-  sheetEl.style.transform = `scale(${scale})`;
-  sheetEl.style.transformOrigin = 'top center';
-  sheetEl.style.marginBottom = (dims.h*(1-scale)*-1)+'mm';
+  const scale = Math.min(1, stageWidth / (pageDims.w * mmToPx), stageHeight / (pageDims.h * mmToPx));
+
+  const page = document.getElementById('warnPage');
+  page.style.width = pageDims.w+'mm';
+  page.style.height = pageDims.h+'mm';
+  page.style.transform = `scale(${scale})`;
+  page.style.transformOrigin = 'top center';
+  page.style.marginBottom = (pageDims.h*(1-scale)*-1)+'mm';
+
+  const sheet = document.getElementById('warnSheet');
+  sheet.style.width = contentDims.w+'mm';
+  sheet.style.height = contentDims.h+'mm';
 }
 
 /* ---------------- Emoji palette ---------------- */
@@ -930,26 +947,26 @@ const PRINT_CSS = `
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#fff; }
   body{ font-family:'Sarabun',sans-serif; }
-  .p-warn-sheet{ position:relative; }
-  .p-warn-accentbar{ position:absolute; inset:0 0 auto 0; height:5.5mm; background:#FF5A36; }
-  .p-warn-badge{ position:absolute; top:11mm; left:50%; transform:translateX(-50%); width:15mm; height:15mm; border-radius:50%; background:#FF5A36; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:9mm; }
+  .p-warn-page{ position:relative; }
+  .p-warn-sheet{ position:absolute; top:0; left:0; box-sizing:border-box; border:2.4mm double #FF5A36; border-radius:3mm; }
+  .p-warn-badge{ position:absolute; top:9mm; left:50%; transform:translateX(-50%); width:14mm; height:14mm; border-radius:50%; background:#fff; border:1.1mm solid #FF5A36; display:flex; align-items:center; justify-content:center; color:#FF5A36; font-weight:800; font-size:8mm; }
   .p-warn-body{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:16mm 14mm; gap:4mm; }
   .p-warn-line{ font-weight:700; line-height:1.32; color:#20101A; }
   .p-warn-foot{ position:absolute; bottom:6mm; left:0; right:0; text-align:center; font-size:3.4mm; color:#9C6E88; font-weight:500; }
-  .p-med-sheet{ width:70mm; height:50mm; padding:2.3mm 3mm; display:flex; flex-direction:column; gap:0.65mm; page-break-after:always; color:#20101A; position:relative; box-sizing:border-box; }
+  .p-med-sheet{ width:70mm; height:50mm; padding:2mm 2.8mm; display:flex; flex-direction:column; gap:0.5mm; page-break-after:always; color:#20101A; position:relative; box-sizing:border-box; }
   .p-med-sheet:last-child{ page-break-after:auto; }
-  .med-h{ font-weight:700; font-size:2.4mm; text-align:center; line-height:1.1; color:#B4106A; }
+  .med-h{ font-weight:700; font-size:2.7mm; text-align:center; line-height:1.15; color:#B4106A; }
   .med-rule{ border-top:0.3mm solid #F3C9DE; margin:0.2mm 0; }
-  .med-row{ display:flex; gap:1.5mm; font-size:2.3mm; line-height:1.25; }
+  .med-row{ display:flex; gap:1.5mm; font-size:2.6mm; line-height:1.22; }
   .med-row .k{ color:#9C6E88; flex:none; }
   .med-row .v{ font-weight:600; word-break:break-word; }
-  .med-drug{ font-weight:700; font-size:3.1mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
-  .med-dose{ font-weight:700; font-size:2.8mm; text-align:center; line-height:1.2; color:#20101A; }
-  .med-note{ font-size:2.5mm; font-weight:600; color:#3a2530; line-height:1.25; }
-  .med-timing{ font-size:2mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
+  .med-drug{ font-weight:700; font-size:3.5mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
+  .med-dose{ font-weight:700; font-size:3.2mm; text-align:center; line-height:1.18; color:#20101A; }
+  .med-note{ font-size:2.7mm; font-weight:600; color:#3a2530; line-height:1.25; }
+  .med-timing{ font-size:2.3mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
   .med-timing .t-on{ font-weight:700; color:#B4106A; }
   .med-timing .t-off{ color:#3a2530; }
-  .med-qty-corner{ position:absolute; bottom:1.2mm; right:1.8mm; font-size:1.7mm; color:#9C6E88; font-weight:500; }
+  .med-qty-corner{ position:absolute; bottom:1.2mm; right:1.8mm; font-size:1.9mm; color:#9C6E88; font-weight:500; }
 `;
 function openPrintWindow(innerHtml, pageSizeMm, title){
   const win = window.open('', '_blank');
@@ -979,7 +996,8 @@ function openPrintWindow(innerHtml, pageSizeMm, title){
 }
 
 function printWarning(){
-  const dims = activeSize==='half' ? {w:210,h:148} : {w:297,h:210};
+  const contentDims = contentDimsFor(activeSize);
+  const pageDims = pageDimsFor(activeSize);
   const bodyEl = document.getElementById('warnBody');
   const foot = document.getElementById('warnFoot').textContent;
   const lines = bodyEl.querySelectorAll('.sheet-line').length
@@ -987,16 +1005,17 @@ function printWarning(){
     : [bodyEl.innerHTML];
   const fontSize = activeSize==='half' ? '11mm' : '15mm';
   const inner = `
-    <div class="p-warn-sheet" style="width:${dims.w}mm;height:${dims.h}mm;">
-      <div class="p-warn-accentbar"></div>
-      <div class="p-warn-badge">!</div>
-      <div class="p-warn-body">
-        ${lines.map(l=>`<div class="p-warn-line" style="font-size:${fontSize};">${l}</div>`).join('')}
+    <div class="p-warn-page" style="width:${pageDims.w}mm;height:${pageDims.h}mm;">
+      <div class="p-warn-sheet" style="width:${contentDims.w}mm;height:${contentDims.h}mm;">
+        <div class="p-warn-badge">!</div>
+        <div class="p-warn-body">
+          ${lines.map(l=>`<div class="p-warn-line" style="font-size:${fontSize};">${l}</div>`).join('')}
+        </div>
+        <div class="p-warn-foot">${esc(foot)}</div>
       </div>
-      <div class="p-warn-foot">${esc(foot)}</div>
     </div>
   `;
-  openPrintWindow(inner, `${dims.w}mm ${dims.h}mm`, 'พิมพ์ป้ายคำเตือน · Vetฉลาก');
+  openPrintWindow(inner, `${pageDims.w}mm ${pageDims.h}mm`, 'พิมพ์ป้ายคำเตือน · Vetฉลาก');
 }
 
 function printSingle(){
@@ -1030,7 +1049,7 @@ function init(){
     document.getElementById(id).addEventListener('change', updateMedPreview);
   });
   window.addEventListener('resize', ()=>{
-    applySheetDims(document.getElementById('warnSheet'), activeSize);
+    applySheetDims(activeSize);
     applyMedPreviewDims();
   });
 }
