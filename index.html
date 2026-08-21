@@ -1,0 +1,931 @@
+<title>Vetฉลาก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --bg:#FFF6FA;
+    --surface:#FFFFFF;
+    --surface-2:#FFE7F2;
+    --border:#FAD1E6;
+    --text:#3B1330;
+    --text-dim:#9C6E88;
+    --accent:#FF3D9A;
+    --accent-ink:#B4106A;
+    --accent-soft:#FFE1F0;
+    --warn:#FF5A36;
+    --warn-ink:#A62B12;
+    --warn-soft:#FFE7DE;
+    --danger:#E0245E;
+    --danger-soft:#FDE1E9;
+    --focus:#FF3D9A;
+    --shadow: 0 1px 2px rgba(180,16,106,.07), 0 6px 20px rgba(180,16,106,.08);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Sarabun',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Sarabun',system-ui,sans-serif; text-wrap:balance; }
+
+  /* ---------- App shell ---------- */
+  .app{ max-width:1280px; margin:0 auto; padding:20px 20px 64px; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 4px 20px;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:42px; height:42px; border-radius:11px;
+    background:linear-gradient(155deg,var(--accent),var(--accent-ink));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:18px; flex:none;
+    box-shadow:var(--shadow);
+  }
+  .brand-text h1{ margin:0; font-size:21px; font-weight:700; letter-spacing:.2px; }
+  .brand-text p{ margin:1px 0 0; font-size:12.5px; color:var(--text-dim); }
+
+  .tabs{
+    display:flex; gap:4px; background:var(--surface-2); padding:4px; border-radius:12px;
+    border:1px solid var(--border);
+  }
+  .tab-btn{
+    appearance:none; border:none; background:transparent; cursor:pointer;
+    padding:9px 18px; border-radius:9px; font-size:14.5px; font-weight:600;
+    color:var(--text-dim); font-family:inherit; transition:background .15s,color .15s;
+    display:flex; align-items:center; gap:7px;
+  }
+  .tab-btn.active{ background:var(--surface); color:var(--accent-ink); box-shadow:var(--shadow); }
+  .tab-btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  /* ---------- Generic pieces ---------- */
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    box-shadow:var(--shadow);
+  }
+  .label-cap{
+    font-size:11.5px; font-weight:600; letter-spacing:.06em; color:var(--text-dim);
+    text-transform:uppercase; margin:0 0 8px;
+  }
+  input[type=text], input[type=number], textarea, select{
+    width:100%; font-family:inherit; font-size:14px; color:var(--text);
+    background:var(--surface); border:1px solid var(--border); border-radius:9px;
+    padding:9px 11px; transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, textarea:focus, select:focus{
+    outline:none; border-color:var(--focus); box-shadow:0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent);
+  }
+  textarea{ resize:vertical; min-height:64px; line-height:1.5; }
+  label.field{ display:flex; flex-direction:column; gap:6px; font-size:13px; color:var(--text-dim); font-weight:500; }
+  label.field b{ color:var(--text); font-weight:600; }
+
+  .btn{
+    appearance:none; cursor:pointer; border-radius:10px; font-family:inherit;
+    font-size:14px; font-weight:600; padding:10px 16px; border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:8px; transition:filter .15s, transform .05s;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:transparent; color:var(--accent-ink); border-color:var(--border); }
+  .btn-ghost:hover{ background:var(--accent-soft); }
+  .btn-danger-ghost{ background:transparent; color:var(--danger); border-color:var(--border); }
+  .btn-danger-ghost:hover{ background:var(--danger-soft); }
+  .btn-sm{ padding:6px 11px; font-size:12.5px; border-radius:8px; }
+  .btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    appearance:none; cursor:pointer; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-dim); font-family:inherit; font-size:13px;
+    font-weight:600; padding:8px 14px;
+  }
+  .chip.active{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+
+  /* ---------- Warning tab ---------- */
+  .warn-layout{ display:grid; grid-template-columns:300px 1fr; gap:20px; align-items:start; }
+  @media (max-width:880px){ .warn-layout{ grid-template-columns:1fr; } }
+
+  .tpl-list{ display:flex; flex-direction:column; gap:8px; padding:14px; }
+  .tpl-card{
+    text-align:left; width:100%; cursor:pointer; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface); padding:11px 12px; font-family:inherit; display:flex; align-items:center; gap:10px;
+  }
+  .tpl-card.active{ border-color:var(--accent); background:var(--accent-soft); }
+  .tpl-dot{ width:8px; height:8px; border-radius:50%; background:var(--warn); flex:none; }
+  .tpl-card .tpl-name{ font-size:13.5px; font-weight:600; color:var(--text); flex:1; }
+  .tpl-del{ background:none; border:none; color:var(--text-dim); cursor:pointer; padding:2px 4px; font-size:14px; line-height:1; border-radius:6px; }
+  .tpl-del:hover{ color:var(--danger); background:var(--danger-soft); }
+  .tpl-add{
+    width:100%; cursor:pointer; border-radius:10px; border:1.5px dashed var(--border);
+    background:transparent; padding:11px 12px; font-family:inherit; font-size:13.5px; font-weight:600;
+    color:var(--accent-ink); margin-top:2px;
+  }
+  .tpl-add:hover{ background:var(--accent-soft); }
+
+  .editor-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:14px 18px; border-bottom:1px solid var(--border);
+  }
+  .preview-stage{
+    padding:28px; display:flex; justify-content:center; background:
+      repeating-linear-gradient(45deg, var(--surface-2) 0 10px, var(--surface) 10px 20px);
+    overflow:auto;
+  }
+  .sheet{
+    background:#fff; color:#20101A; box-shadow:0 2px 6px rgba(180,16,106,.12), 0 14px 34px rgba(180,16,106,.16);
+    position:relative; flex:none;
+  }
+  .sheet-accentbar{ position:absolute; inset:0 0 auto 0; height:5.5mm; background:var(--warn); }
+  .sheet-badge{
+    position:absolute; top:11mm; left:50%; transform:translateX(-50%);
+    width:15mm; height:15mm; border-radius:50%; background:var(--warn);
+    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:9mm;
+    font-family:'Sarabun',sans-serif;
+  }
+  .sheet-body{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:16mm 14mm; gap:4mm; outline:none;
+  }
+  .sheet-body[contenteditable="true"]:focus{ box-shadow:inset 0 0 0 2px var(--focus); border-radius:4px; }
+  .sheet-line{ font-family:'Sarabun',sans-serif; font-weight:700; line-height:1.32; }
+  .sheet.size-half .sheet-line{ font-size:11mm; }
+  .sheet.size-full .sheet-line{ font-size:15mm; }
+  .sheet-foot{
+    position:absolute; bottom:6mm; left:0; right:0; text-align:center;
+    font-family:'Sarabun',sans-serif; font-size:3.4mm; color:#9C6E88; font-weight:500;
+  }
+
+  .editor-hint{ font-size:12.5px; color:var(--text-dim); padding:12px 18px 18px; }
+
+  .emoji-palette{ padding:12px 18px; border-top:1px solid var(--border); background:var(--surface-2); }
+  .emoji-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .emoji-btn{
+    appearance:none; cursor:pointer; border:1px solid var(--border); background:var(--surface);
+    border-radius:9px; font-size:18px; line-height:1; padding:6px 9px; font-family:inherit;
+    transition:background .12s, border-color .12s, transform .05s;
+  }
+  .emoji-btn:hover{ background:var(--accent-soft); border-color:var(--accent); }
+  .emoji-btn:active{ transform:scale(.92); }
+
+  /* ---------- Medication tab ---------- */
+  .med-layout{ display:grid; grid-template-columns:1fr 380px; gap:20px; align-items:start; }
+  @media (max-width:960px){ .med-layout{ grid-template-columns:1fr; } }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; padding:18px; }
+  .form-grid .span2{ grid-column:1 / -1; }
+  @media (max-width:560px){ .form-grid{ grid-template-columns:1fr; } }
+
+  .timing-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .timing-opt{
+    flex:1; min-width:112px; display:flex; align-items:center; gap:8px; cursor:pointer; border-radius:9px;
+    border:1.5px solid var(--border); background:var(--surface); padding:9px 12px; font-size:13.5px;
+    font-weight:600; color:var(--text-dim); transition:background .12s, border-color .12s, color .12s;
+  }
+  .timing-opt .box{
+    width:18px; height:18px; flex:none; border-radius:5px; border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff;
+    background:var(--surface); transition:background .12s, border-color .12s;
+  }
+  .timing-opt.active{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+  .timing-opt.active .box{ background:var(--accent); border-color:var(--accent); }
+
+  .med-preview-wrap{ padding:20px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .med-preview-frame{
+    position:relative; overflow:hidden; flex:none;
+  }
+  .med-sheet{
+    width:70mm; height:50mm; background:#fff; color:#20101A;
+    box-shadow:0 2px 6px rgba(180,16,106,.12), 0 14px 34px rgba(180,16,106,.16);
+    padding:2.5mm 3mm; display:flex; flex-direction:column; gap:0.75mm;
+    font-family:'Sarabun',sans-serif;
+    position:absolute; top:0; left:0;
+  }
+  .med-h{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:2.4mm; text-align:center; line-height:1.1; color:#B4106A; }
+  .med-rule{ border-top:0.3mm solid #F3C9DE; margin:0.2mm 0; }
+  .med-row{ display:flex; gap:1.5mm; font-size:2.3mm; line-height:1.25; }
+  .med-row .k{ color:#9C6E88; flex:none; }
+  .med-row .v{ font-weight:600; word-break:break-word; }
+  .med-drug{ font-family:'Sarabun',sans-serif; font-weight:700; font-size:3.1mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
+  .med-note{ font-size:2.05mm; color:#3a2530; line-height:1.2; }
+  .med-timing{ font-size:2mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
+  .med-timing .t-on{ font-weight:700; color:#B4106A; }
+  .med-timing .t-off{ color:#3a2530; }
+
+  .queue-box{ padding:16px; border-top:1px solid var(--border); }
+  .queue-item{
+    display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border);
+    border-radius:9px; margin-bottom:7px; font-size:13px; background:var(--surface);
+  }
+  .queue-item .qi-name{ flex:1; font-weight:600; }
+  .queue-item .qi-sub{ color:var(--text-dim); font-weight:400; font-size:12px; }
+  .queue-empty{ font-size:12.5px; color:var(--text-dim); padding:6px 2px 2px; }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(10,20,17,.45); display:none;
+    align-items:center; justify-content:center; padding:20px; z-index:50;
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal{
+    background:var(--surface); border-radius:14px; width:100%; max-width:440px;
+    box-shadow:0 20px 60px rgba(0,0,0,.3); border:1px solid var(--border);
+  }
+  .modal-head{ padding:16px 20px; border-bottom:1px solid var(--border); font-weight:700; font-size:15.5px; }
+  .modal-body{ padding:18px 20px; display:flex; flex-direction:column; gap:12px; }
+  .modal-foot{ padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:8px; }
+
+  .footer-note{ text-align:center; color:var(--text-dim); font-size:12px; padding-top:28px; }
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(16px);
+    background:var(--text); color:#fff; padding:12px 20px; border-radius:11px; font-size:13.5px;
+    font-weight:600; box-shadow:0 12px 32px rgba(59,19,48,.28); z-index:100; opacity:0; pointer-events:none;
+    transition:opacity .18s, transform .18s; max-width:min(90vw,420px); text-align:center; line-height:1.4;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.error{ background:var(--danger); }
+
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div class="brand-text">
+        <h1>Vetฉลาก</h1>
+        <p>พิมพ์ป้ายคำเตือนและฉลากยา — ใช้งานฟรี ไม่ต้องติดตั้ง</p>
+      </div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" id="tabBtnWarn" onclick="switchTab('warn')">⚠ ป้ายคำเตือน</button>
+      <button class="tab-btn" id="tabBtnMed" onclick="switchTab('med')">💊 ฉลากยา</button>
+    </div>
+  </div>
+
+  <!-- ============ WARNING LABEL TAB ============ -->
+  <div class="panel active" id="panelWarn">
+    <div class="warn-layout">
+      <div class="card">
+        <div style="padding:14px 14px 0;"><p class="label-cap">เลือกป้าย</p></div>
+        <div class="tpl-list" id="tplList"></div>
+        <div style="padding:0 14px 14px;">
+          <button class="tpl-add" onclick="openTplModal()">+ เพิ่มป้ายใหม่</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="editor-toolbar">
+          <div class="chip-row">
+            <button class="chip active" id="sizeHalfBtn" onclick="setSize('half')">ครึ่ง A4 แนวนอน · 210×148 มม.</button>
+            <button class="chip" id="sizeFullBtn" onclick="setSize('full')">A4 แนวนอน · 297×210 มม.</button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="resetWarnText()">↺ คืนค่าเดิม</button>
+            <button class="btn btn-primary" onclick="printWarning()">🖨 พิมพ์ป้ายนี้</button>
+          </div>
+        </div>
+        <div class="emoji-palette">
+          <p class="label-cap" style="margin:0 0 8px;">แทรกอิโมจิ — คลิกตำแหน่งในป้ายก่อน แล้วกดอิโมจิเพื่อเพิ่ม</p>
+          <div class="emoji-row" id="emojiPaletteWarn"></div>
+        </div>
+        <div class="preview-stage">
+          <div class="sheet size-half" id="warnSheet">
+            <div class="sheet-accentbar"></div>
+            <div class="sheet-badge">!</div>
+            <div class="sheet-body" id="warnBody" contenteditable="true" spellcheck="false"></div>
+            <div class="sheet-foot" id="warnFoot">โรงพยาบาลสัตว์ มหาวิทยาลัยขอนแก่น</div>
+          </div>
+        </div>
+        <p class="editor-hint">แตะข้อความในป้ายเพื่อแก้ไขจุดเว้นว่าง (เช่น เวลา) ก่อนพิมพ์ได้โดยตรง</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MEDICATION LABEL TAB ============ -->
+  <div class="panel" id="panelMed">
+    <div class="med-layout">
+      <div class="card">
+        <div style="padding:14px 18px 0;"><p class="label-cap">ข้อมูลฉลากยา</p></div>
+        <div class="form-grid">
+          <label class="field span2"><b>โรงพยาบาล / หน่วยงาน</b>
+            <input type="text" id="fHospital" value="โรงพยาบาลสัตว์ มหาวิทยาลัยขอนแก่น">
+          </label>
+          <label class="field"><b>ชื่อเจ้าของ</b><input type="text" id="fOwner" placeholder="เช่น คุณสมศรี ใจดี"></label>
+          <label class="field"><b>ชื่อสัตว์</b><input type="text" id="fPet" placeholder="เช่น มะลิ"></label>
+          <label class="field"><b>HN</b><input type="text" id="fHN" placeholder="เช่น 68-01234"></label>
+          <label class="field"><b>วันที่</b><input type="date" id="fDate"></label>
+
+          <label class="field span2"><b>ชื่อยา</b>
+            <select id="fDrugSelect" onchange="onDrugSelect()"></select>
+          </label>
+          <label class="field span2" id="fDrugCustomWrap" style="display:none;">
+            <b>ชื่อยา (พิมพ์เอง)</b>
+            <input type="text" id="fDrugCustom" placeholder="พิมพ์ชื่อยา">
+          </label>
+
+          <label class="field"><b>ป้อนครั้งละ</b>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="fDoseAmt" placeholder="เช่น 1" style="flex:1; min-width:0;">
+              <select id="fDoseUnit" style="flex:1.3; min-width:0;">
+                <option>เม็ด</option>
+                <option>แคปซูล</option>
+                <option>ซีซี</option>
+                <option>ช้อนชา</option>
+                <option>ช้อนโต๊ะ</option>
+                <option>ครั้ง</option>
+              </select>
+            </div>
+          </label>
+          <label class="field"><b>วันละ (ครั้ง)</b><input type="text" id="fDoseFreq" placeholder="เช่น 2"></label>
+
+          <label class="field"><b>ป้อนยาทุก</b><input type="text" id="fEvery" placeholder="เช่น 8"></label>
+          <label class="field"><b>หน่วย</b>
+            <select id="fEveryUnit">
+              <option>ชั่วโมง</option>
+              <option>วัน</option>
+              <option>วันเว้นวัน</option>
+            </select>
+          </label>
+
+          <label class="field span2"><b>ช่วงวันที่ป้อนยา</b>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="date" id="fDateFrom" style="flex:1; min-width:0;">
+              <span style="color:var(--text-dim); font-size:13px;">ถึง</span>
+              <input type="date" id="fDateTo" style="flex:1; min-width:0;">
+            </div>
+          </label>
+
+          <div class="field span2">
+            <b>เวลาให้ยา</b>
+            <div class="timing-row" id="timingRow">
+              <div class="timing-opt active" data-v="ก่อนอาหาร" onclick="selectTiming(this)"><span class="box">✓</span>ก่อนอาหาร</div>
+              <div class="timing-opt" data-v="หลังอาหาร" onclick="selectTiming(this)"><span class="box"></span>หลังอาหาร</div>
+              <div class="timing-opt" data-v="พร้อมอาหาร" onclick="selectTiming(this)"><span class="box"></span>พร้อมอาหาร</div>
+            </div>
+          </div>
+
+          <label class="field"><b>จำนวน</b><input type="text" id="fQty" placeholder="เช่น 10"></label>
+          <label class="field"><b>หน่วยนับ</b>
+            <select id="fQtyUnit">
+              <option>เม็ด</option>
+              <option>แคปซูล</option>
+              <option>กระปุก</option>
+              <option>ขวด</option>
+              <option>หลอด</option>
+            </select>
+          </label>
+
+          <label class="field span2"><b>หมายเหตุ</b><textarea id="fNote" placeholder="หมายเหตุเพิ่มเติม"></textarea></label>
+        </div>
+        <div style="display:flex; gap:8px; padding:0 18px 18px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="addToQueue()">+ เพิ่มลงคิวพิมพ์</button>
+          <button class="btn btn-ghost" onclick="printSingle()">🖨 พิมพ์ฉลากนี้ทันที</button>
+          <button class="btn btn-ghost" onclick="openDrugModal()" style="margin-left:auto;">+ เพิ่มยาลงรายการ</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="med-preview-wrap">
+          <p class="label-cap" style="align-self:flex-start; margin-bottom:0;">ตัวอย่างฉลาก · 70×50 มม.</p>
+          <div class="med-preview-frame" id="medPreviewFrame">
+            <div class="med-sheet" id="medPreview"></div>
+          </div>
+        </div>
+        <div class="queue-box">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+            <p class="label-cap" style="margin:0;">คิวพิมพ์ (<span id="queueCount">0</span>)</p>
+            <button class="btn btn-primary btn-sm" onclick="printQueue()" id="printQueueBtn" disabled>🖨 พิมพ์ทั้งหมด</button>
+          </div>
+          <div id="queueList"></div>
+          <p class="queue-empty" id="queueEmptyMsg">ยังไม่มีฉลากในคิว — กด "เพิ่มลงคิวพิมพ์" เพื่อรวมพิมพ์หลายรายการในครั้งเดียว</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">Vetฉลาก · ข้อมูลทั้งหมดถูกเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น ไม่มีการส่งข้อมูลออกนอกเครื่อง</p>
+</div>
+
+<!-- Template modal -->
+<div class="modal-backdrop" id="tplModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">เพิ่มป้ายคำเตือนใหม่</div>
+    <div class="modal-body">
+      <label class="field"><b>ชื่อป้าย (แสดงในรายการ)</b><input type="text" id="tplNewTitle" placeholder="เช่น งดใช้แขนขวาเจาะเลือด"></label>
+      <label class="field"><b>ข้อความบนป้าย</b>
+        <textarea id="tplNewBody" placeholder="พิมพ์ข้อความแต่ละบรรทัด กด Enter เพื่อขึ้นบรรทัดใหม่" style="min-height:96px;"></textarea>
+      </label>
+      <div>
+        <p class="label-cap" style="margin:0 0 8px;">แทรกอิโมจิ</p>
+        <div class="emoji-row" id="emojiPaletteTpl"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeTplModal()">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveTplModal()">บันทึกป้าย</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drug modal -->
+<div class="modal-backdrop" id="drugModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">เพิ่มยาลงรายการ (ดรอปดาวน์)</div>
+    <div class="modal-body">
+      <label class="field"><b>ชื่อยา</b><input type="text" id="drugNewName" placeholder="เช่น Amoxicillin 250mg"></label>
+      <label class="field"><b>หมายเหตุที่จะกรอกอัตโนมัติ</b><input type="text" id="drugNewNote" placeholder="เช่น ยาปฏิชีวนะ"></label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeDrugModal()">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveDrugModal()">บันทึกยา</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generic confirm modal -->
+<div class="modal-backdrop" id="confirmModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">ยืนยันการทำรายการ</div>
+    <div class="modal-body"><p id="confirmModalMsg" style="margin:0; font-size:14px; color:var(--text); line-height:1.5;"></p></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeConfirmModal(false)">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="closeConfirmModal(true)">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ---------------- Data ---------------- */
+const DEFAULT_TEMPLATES = [
+  { id:'d1', title:'ห้ามวัดไข้ทางก้น', lines:['ห้ามวัดไข้ทางก้น'] },
+  { id:'d2', title:'งดน้ำ งดอาหาร', lines:['งดน้ำ งดอาหาร','เริ่มกินน้ำเวลา......................','เริ่มทานอาหารเวลา......................'] },
+  { id:'d3', title:'พาเดินสนาม', lines:['พาเดินสนามเวลา.................................'] },
+  { id:'d4', title:'สัตว์ป่วยเบาหวาน', lines:['สัตว์ป่วยเบาหวาน','ให้อาหารตรงเวลาทุกครั้ง'] },
+  { id:'d5', title:'แมวคาสายสวนปัสสาวะ', lines:['แมวคาสายสวนปัสสาวะ','ห้ามถอดปลอกคอกันเลีย (Cone)','งดวางกระบะทราย'] },
+  { id:'d6', title:'สัตว์เด็ก (ลูกสัตว์)', lines:['สัตว์เด็ก (ลูกสัตว์)','สวมถุงมือใหม่และสะอาดทุกครั้ง','แยกปรอทวัดไข้เฉพาะ'] },
+  { id:'d7', title:'สัตว์ป่วยติดเชื้อ', lines:['สัตว์ป่วยติดเชื้อ','สวมถุงมือทุกครั้ง','แยกปรอทวัดไข้เฉพาะ'] },
+  { id:'d8', title:'ให้อาหารทางสายให้อาหาร', lines:['ให้อาหารทางสายให้อาหารเท่านั้น','งดให้อาหารทางปาก'] },
+];
+
+const DEFAULT_DRUGS = [
+  { name:'Bromocriptine', note:'' },
+  { name:'CCNU 10 mg', note:'ยาเคมีบำบัด สวมถุงมือ' },
+  { name:'Ferrick Plus K', note:'ยาบำรุงเลือด' },
+  { name:'Florentero Act', note:'ปรับสมดุลลำไส้' },
+  { name:'Fenbendazole', note:'ยาถ่ายพยาธิ ป้อนต่อเนื่อง 5 วัน หรือตามที่สัตวแพทย์สั่ง' },
+  { name:'Furosemide (Syrup 10mg/ml)', note:'ยาขับน้ำ' },
+  { name:'Mirtazapine (7.5mg)', note:'กระตุ้นความอยากอาหาร' },
+  { name:'Rivaroxaban 10mg', note:'ลดการสะสมของลิ่มเลือด' },
+  { name:'Palladia (15mg)', note:'ยาเคมีบำบัด ป้อน จันทร์ - พุธ - ศุกร์' },
+  { name:'Palladia (50mg)', note:'ยาเคมีบำบัด ป้อน จันทร์ - พุธ - ศุกร์' },
+  { name:'Torsemide', note:'ยาขับน้ำ' },
+];
+
+const LS_TPL = 'vetlabel_custom_templates';
+const LS_DRUGS = 'vetlabel_custom_drugs';
+
+function loadCustomTpls(){ try{ return JSON.parse(localStorage.getItem(LS_TPL)) || []; }catch(e){ return []; } }
+function saveCustomTpls(v){ localStorage.setItem(LS_TPL, JSON.stringify(v)); }
+function loadCustomDrugs(){ try{ return JSON.parse(localStorage.getItem(LS_DRUGS)) || []; }catch(e){ return []; } }
+function saveCustomDrugs(v){ localStorage.setItem(LS_DRUGS, JSON.stringify(v)); }
+
+let customTemplates = loadCustomTpls();
+let customDrugs = loadCustomDrugs();
+let allTemplates = [...DEFAULT_TEMPLATES, ...customTemplates];
+let allDrugs = [...DEFAULT_DRUGS, ...customDrugs];
+
+let activeTplId = allTemplates[0].id;
+let activeSize = 'half'; // 'half' | 'full'
+let selectedTiming = 'ก่อนอาหาร';
+let queue = [];
+
+/* ---------------- Tabs ---------------- */
+function switchTab(name){
+  document.getElementById('panelWarn').classList.toggle('active', name==='warn');
+  document.getElementById('panelMed').classList.toggle('active', name==='med');
+  document.getElementById('tabBtnWarn').classList.toggle('active', name==='warn');
+  document.getElementById('tabBtnMed').classList.toggle('active', name==='med');
+  if(name==='med') applyMedPreviewDims();
+  else applySheetDims(document.getElementById('warnSheet'), activeSize);
+}
+
+/* Keep the on-screen 70x50mm preview scaled up for legibility, but reserve
+   exactly the scaled footprint so it never overlaps surrounding UI. */
+function applyMedPreviewDims(){
+  const frame = document.getElementById('medPreviewFrame');
+  const sheet = document.getElementById('medPreview');
+  const mmToPx = 3.7795275591;
+  const naturalWmm = 70, naturalHmm = 50;
+  const maxWpx = Math.max(140, frame.parentElement.clientWidth - 4);
+  const scale = Math.min(2.4, maxWpx / (naturalWmm * mmToPx));
+  frame.style.width = (naturalWmm * scale) + 'mm';
+  frame.style.height = (naturalHmm * scale) + 'mm';
+  sheet.style.transform = `scale(${scale})`;
+}
+
+/* ---------------- Warning label tab ---------------- */
+function renderTplList(){
+  const wrap = document.getElementById('tplList');
+  wrap.innerHTML = '';
+  allTemplates.forEach(t=>{
+    const isCustom = !t.id.startsWith('d');
+    const row = document.createElement('div');
+    row.className = 'tpl-card' + (t.id===activeTplId ? ' active' : '');
+    row.innerHTML = `<span class="tpl-dot"></span><span class="tpl-name">${escapeHtml(t.title)}</span>` +
+      (isCustom ? `<button class="tpl-del" title="ลบป้ายนี้" onclick="deleteTpl(event,'${t.id}')">✕</button>` : '');
+    row.onclick = ()=> selectTpl(t.id);
+    wrap.appendChild(row);
+  });
+}
+function selectTpl(id){
+  activeTplId = id;
+  const t = allTemplates.find(x=>x.id===id);
+  document.getElementById('warnBody').innerHTML = t.lines.map(l=>`<div class="sheet-line">${escapeHtml(l)}</div>`).join('');
+  renderTplList();
+}
+function resetWarnText(){ selectTpl(activeTplId); }
+function deleteTpl(ev, id){
+  ev.stopPropagation();
+  askConfirm('ลบป้ายนี้ออกจากรายการ?', ()=>{
+    customTemplates = customTemplates.filter(t=>t.id!==id);
+    saveCustomTpls(customTemplates);
+    allTemplates = [...DEFAULT_TEMPLATES, ...customTemplates];
+    if(activeTplId===id) activeTplId = allTemplates[0].id;
+    selectTpl(activeTplId);
+  });
+}
+function setSize(size){
+  activeSize = size;
+  document.getElementById('sizeHalfBtn').classList.toggle('active', size==='half');
+  document.getElementById('sizeFullBtn').classList.toggle('active', size==='full');
+  const sheet = document.getElementById('warnSheet');
+  sheet.classList.toggle('size-half', size==='half');
+  sheet.classList.toggle('size-full', size==='full');
+  applySheetDims(sheet, size);
+}
+function applySheetDims(sheetEl, size){
+  const dims = size==='half' ? {w:210,h:148} : {w:297,h:210};
+  const stageWidth = Math.min(document.querySelector('.preview-stage').clientWidth - 56, 900);
+  const scale = Math.min(1, stageWidth / (dims.w * 3.7795275591)); // px per mm at 96dpi
+  sheetEl.style.width = dims.w+'mm';
+  sheetEl.style.height = dims.h+'mm';
+  sheetEl.style.transform = `scale(${scale})`;
+  sheetEl.style.transformOrigin = 'top center';
+  sheetEl.style.marginBottom = (dims.h*(1-scale)*-1)+'mm';
+}
+
+/* ---------------- Emoji palette ---------------- */
+const EMOJI_SET = ['⚠️','🚫','🌡️','💧','🍽️','🐾','🐱','🐶','💉','🧤','🩺','⏰','❄️','🚶','😷','🧼','🩹','🔥'];
+let lastEditableTarget = 'warnBody';
+function trackEditable(id){
+  document.getElementById(id).addEventListener('focus', ()=> lastEditableTarget = id);
+}
+function renderEmojiPalette(containerId){
+  document.getElementById(containerId).innerHTML = EMOJI_SET
+    .map(e=>`<button type="button" class="emoji-btn" onmousedown="event.preventDefault()" onclick="insertEmoji('${e}')">${e}</button>`)
+    .join('');
+}
+function insertEmoji(emoji){
+  const el = document.getElementById(lastEditableTarget) || document.getElementById('warnBody');
+  el.focus();
+  if(el.isContentEditable){
+    const sel = window.getSelection();
+    let range;
+    if(sel.rangeCount && el.contains(sel.anchorNode)){
+      range = sel.getRangeAt(0);
+    } else {
+      range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+    }
+    range.deleteContents();
+    const node = document.createTextNode(emoji);
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.setEndAfter(node);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else {
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    el.value = el.value.slice(0,start) + emoji + el.value.slice(end);
+    const pos = start + emoji.length;
+    el.setSelectionRange(pos, pos);
+  }
+}
+
+/* Template modal */
+function openTplModal(){
+  document.getElementById('tplModalBackdrop').classList.add('open');
+  document.getElementById('tplNewTitle').value='';
+  document.getElementById('tplNewBody').value='';
+  lastEditableTarget = 'tplNewBody';
+}
+function closeTplModal(){ document.getElementById('tplModalBackdrop').classList.remove('open'); }
+function saveTplModal(){
+  const title = document.getElementById('tplNewTitle').value.trim();
+  const body = document.getElementById('tplNewBody').value.trim();
+  if(!title || !body){ showToast('กรุณากรอกชื่อป้ายและข้อความ', true); return; }
+  const id = 'c' + Date.now();
+  const lines = body.split('\n').map(l=>l.trim()).filter(Boolean);
+  customTemplates.push({ id, title, lines });
+  saveCustomTpls(customTemplates);
+  allTemplates = [...DEFAULT_TEMPLATES, ...customTemplates];
+  closeTplModal();
+  selectTpl(id);
+}
+
+/* ---------------- Medication tab ---------------- */
+function renderDrugSelect(){
+  const sel = document.getElementById('fDrugSelect');
+  sel.innerHTML = '';
+  allDrugs.forEach((d,i)=>{
+    const opt = document.createElement('option');
+    opt.value = i; opt.textContent = d.name;
+    sel.appendChild(opt);
+  });
+  const custom = document.createElement('option');
+  custom.value = 'custom'; custom.textContent = 'อื่นๆ (พิมพ์เอง)';
+  sel.appendChild(custom);
+}
+function onDrugSelect(){
+  const sel = document.getElementById('fDrugSelect');
+  const customWrap = document.getElementById('fDrugCustomWrap');
+  if(sel.value==='custom'){
+    customWrap.style.display = 'flex';
+    document.getElementById('fNote').value = '';
+  } else {
+    customWrap.style.display = 'none';
+    const d = allDrugs[+sel.value];
+    document.getElementById('fNote').value = d.note || '';
+  }
+  updateMedPreview();
+}
+function selectTiming(el){
+  selectedTiming = el.getAttribute('data-v');
+  document.querySelectorAll('#timingRow .timing-opt').forEach(o=>{
+    const on = o===el;
+    o.classList.toggle('active', on);
+    o.querySelector('.box').textContent = on ? '✓' : '';
+  });
+  updateMedPreview();
+}
+const THAI_MONTHS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function todayIso(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function formatThaiDate(iso){
+  if(!iso) return '';
+  const [y,m,day] = iso.split('-').map(Number);
+  if(!y || !m || !day) return '';
+  return `${day} ${THAI_MONTHS_SHORT[m-1]} ${y+543}`;
+}
+function currentDrugName(){
+  const sel = document.getElementById('fDrugSelect');
+  if(sel.value==='custom') return document.getElementById('fDrugCustom').value.trim();
+  return allDrugs[+sel.value] ? allDrugs[+sel.value].name : '';
+}
+function collectMedData(){
+  return {
+    hospital: document.getElementById('fHospital').value.trim(),
+    owner: document.getElementById('fOwner').value.trim(),
+    pet: document.getElementById('fPet').value.trim(),
+    hn: document.getElementById('fHN').value.trim(),
+    date: document.getElementById('fDate').value,
+    drug: currentDrugName(),
+    doseAmt: document.getElementById('fDoseAmt').value.trim(),
+    doseUnit: document.getElementById('fDoseUnit').value,
+    doseFreq: document.getElementById('fDoseFreq').value.trim(),
+    every: document.getElementById('fEvery').value.trim(),
+    everyUnit: document.getElementById('fEveryUnit').value,
+    dateFrom: document.getElementById('fDateFrom').value,
+    dateTo: document.getElementById('fDateTo').value,
+    timing: selectedTiming,
+    qty: document.getElementById('fQty').value.trim(),
+    qtyUnit: document.getElementById('fQtyUnit').value,
+    note: document.getElementById('fNote').value.trim(),
+  };
+}
+function timingLine(label, timing){
+  return `<span class="${timing===label?'t-on':'t-off'}">[${timing===label?'✓':' '}] ${label}</span>`;
+}
+function medLabelHtml(d){
+  const doseLine = (d.doseAmt || d.doseFreq) ? `ป้อนครั้งละ ${esc(d.doseAmt||'—')} ${esc(d.doseUnit||'')} วันละ ${esc(d.doseFreq||'—')} ครั้ง` : '';
+  const everyLine = d.every ? `ป้อนยาทุก ${esc(d.every)} ${esc(d.everyUnit)}` : '';
+  let dateLine = '';
+  if(d.dateFrom && d.dateTo && d.dateFrom !== d.dateTo) dateLine = `ทุกวันที่ ${esc(formatThaiDate(d.dateFrom))} – ${esc(formatThaiDate(d.dateTo))}`;
+  else if(d.dateFrom) dateLine = `ทุกวันที่ ${esc(formatThaiDate(d.dateFrom))}`;
+  return `
+    <div class="med-h">${esc(d.hospital || 'โรงพยาบาลสัตว์')}</div>
+    <div class="med-rule"></div>
+    <div class="med-row"><span class="k">เจ้าของ:</span><span class="v">${esc(d.owner||'—')}</span></div>
+    <div class="med-row"><span class="k">สัตว์:</span><span class="v">${esc(d.pet||'—')}</span><span class="k" style="margin-left:auto;">HN:</span><span class="v">${esc(d.hn||'—')}</span></div>
+    ${d.date ? `<div class="med-row"><span class="k">วันที่:</span><span class="v">${esc(formatThaiDate(d.date))}</span></div>` : ''}
+    <div class="med-drug">${esc(d.drug || 'ชื่อยา')}</div>
+    ${doseLine ? `<div class="med-row" style="justify-content:center;">${doseLine}</div>` : ''}
+    ${everyLine ? `<div class="med-row" style="justify-content:center;">${everyLine}</div>` : ''}
+    ${dateLine ? `<div class="med-row" style="justify-content:center;">${dateLine}</div>` : ''}
+    <div class="med-timing">
+      ${timingLine('ก่อนอาหาร', d.timing)}
+      ${timingLine('หลังอาหาร', d.timing)}
+      ${timingLine('พร้อมอาหาร', d.timing)}
+    </div>
+    ${d.note ? `<div class="med-note">หมายเหตุ: ${esc(d.note)}</div>` : ''}
+    ${d.qty ? `<div class="med-row" style="justify-content:center; margin-top:auto;">จำนวน ${esc(d.qty)} ${esc(d.qtyUnit)}</div>` : ''}
+  `;
+}
+function updateMedPreview(){
+  document.getElementById('medPreview').innerHTML = medLabelHtml(collectMedData());
+}
+function esc(s){ return escapeHtml(s==null?'':String(s)); }
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------------- Toast + confirm (native alert/confirm are unreliable
+   inside a sandboxed viewer, so use in-page UI instead) ---------------- */
+let _toastTimer = null;
+function showToast(message, isError){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = message;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=> t.classList.remove('show'), 4200);
+}
+let _confirmCallback = null;
+function askConfirm(message, onYes){
+  document.getElementById('confirmModalMsg').textContent = message;
+  _confirmCallback = onYes;
+  document.getElementById('confirmModalBackdrop').classList.add('open');
+}
+function closeConfirmModal(yes){
+  document.getElementById('confirmModalBackdrop').classList.remove('open');
+  const cb = _confirmCallback;
+  _confirmCallback = null;
+  if(yes && cb) cb();
+}
+
+/* Queue */
+function addToQueue(){
+  const d = collectMedData();
+  if(!d.drug){ showToast('กรุณาเลือกหรือพิมพ์ชื่อยา', true); return; }
+  queue.push(d);
+  renderQueue();
+}
+function removeFromQueue(idx){
+  queue.splice(idx,1);
+  renderQueue();
+}
+function renderQueue(){
+  const list = document.getElementById('queueList');
+  const count = document.getElementById('queueCount');
+  const empty = document.getElementById('queueEmptyMsg');
+  const btn = document.getElementById('printQueueBtn');
+  count.textContent = queue.length;
+  btn.disabled = queue.length===0;
+  empty.style.display = queue.length===0 ? 'block' : 'none';
+  list.innerHTML = queue.map((d,i)=>`
+    <div class="queue-item">
+      <span class="qi-name">${esc(d.drug)}<div class="qi-sub">${esc(d.pet||'ไม่ระบุชื่อสัตว์')} · HN ${esc(d.hn||'—')}</div></span>
+      <button class="btn btn-danger-ghost btn-sm" onclick="removeFromQueue(${i})">ลบ</button>
+    </div>
+  `).join('');
+}
+
+/* Drug modal */
+function openDrugModal(){ document.getElementById('drugModalBackdrop').classList.add('open'); document.getElementById('drugNewName').value=''; document.getElementById('drugNewNote').value=''; }
+function closeDrugModal(){ document.getElementById('drugModalBackdrop').classList.remove('open'); }
+function saveDrugModal(){
+  const name = document.getElementById('drugNewName').value.trim();
+  const note = document.getElementById('drugNewNote').value.trim();
+  if(!name){ showToast('กรุณากรอกชื่อยา', true); return; }
+  customDrugs.push({ name, note });
+  saveCustomDrugs(customDrugs);
+  allDrugs = [...DEFAULT_DRUGS, ...customDrugs];
+  renderDrugSelect();
+  document.getElementById('fDrugSelect').value = allDrugs.length-1;
+  onDrugSelect();
+  closeDrugModal();
+}
+
+/* ---------------- Printing ----------------
+   Vetฉลาก runs inside a sandboxed viewer, where window.print() on the
+   page itself is blocked. Printing instead opens a plain top-level
+   window with just the label markup + print CSS and prints that. */
+const PRINT_CSS = `
+  @media print{ @page{ margin:0; } }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#fff; }
+  body{ font-family:'Sarabun',sans-serif; }
+  .p-warn-sheet{ position:relative; }
+  .p-warn-accentbar{ position:absolute; inset:0 0 auto 0; height:5.5mm; background:#FF5A36; }
+  .p-warn-badge{ position:absolute; top:11mm; left:50%; transform:translateX(-50%); width:15mm; height:15mm; border-radius:50%; background:#FF5A36; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:9mm; }
+  .p-warn-body{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:16mm 14mm; gap:4mm; }
+  .p-warn-line{ font-weight:700; line-height:1.32; color:#20101A; }
+  .p-warn-foot{ position:absolute; bottom:6mm; left:0; right:0; text-align:center; font-size:3.4mm; color:#9C6E88; font-weight:500; }
+  .p-med-sheet{ width:70mm; height:50mm; padding:2.5mm 3mm; display:flex; flex-direction:column; gap:0.75mm; page-break-after:always; color:#20101A; }
+  .p-med-sheet:last-child{ page-break-after:auto; }
+  .med-h{ font-weight:700; font-size:2.4mm; text-align:center; line-height:1.1; color:#B4106A; }
+  .med-rule{ border-top:0.3mm solid #F3C9DE; margin:0.2mm 0; }
+  .med-row{ display:flex; gap:1.5mm; font-size:2.3mm; line-height:1.25; }
+  .med-row .k{ color:#9C6E88; flex:none; }
+  .med-row .v{ font-weight:600; word-break:break-word; }
+  .med-drug{ font-weight:700; font-size:3.1mm; text-align:center; margin:0.2mm 0; color:#B4106A; }
+  .med-note{ font-size:2.05mm; color:#3a2530; line-height:1.2; }
+  .med-timing{ font-size:2mm; display:flex; flex-direction:row; flex-wrap:wrap; gap:0 2mm; justify-content:center; margin-top:0.1mm; }
+  .med-timing .t-on{ font-weight:700; color:#B4106A; }
+  .med-timing .t-off{ color:#3a2530; }
+`;
+function openPrintWindow(innerHtml, pageSizeMm, title){
+  const win = window.open('', '_blank');
+  if(!win){
+    showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาต Pop-up สำหรับเว็บนี้ในตั้งค่าเบราว์เซอร์ แล้วกดพิมพ์อีกครั้ง', true);
+    return;
+  }
+  win.document.open();
+  win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap">
+    <style>@page{ size:${pageSizeMm}; margin:0; } ${PRINT_CSS}</style>
+  </head><body>${innerHtml}
+  <script>
+    function go(){ try{ window.focus(); window.print(); }catch(e){} }
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(go); }
+    window.addEventListener('load', go);
+    setTimeout(go, 700);
+  <\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function printWarning(){
+  const dims = activeSize==='half' ? {w:210,h:148} : {w:297,h:210};
+  const bodyEl = document.getElementById('warnBody');
+  const foot = document.getElementById('warnFoot').textContent;
+  const lines = bodyEl.querySelectorAll('.sheet-line').length
+    ? Array.from(bodyEl.children).map(c=>c.innerHTML)
+    : [bodyEl.innerHTML];
+  const fontSize = activeSize==='half' ? '11mm' : '15mm';
+  const inner = `
+    <div class="p-warn-sheet" style="width:${dims.w}mm;height:${dims.h}mm;">
+      <div class="p-warn-accentbar"></div>
+      <div class="p-warn-badge">!</div>
+      <div class="p-warn-body">
+        ${lines.map(l=>`<div class="p-warn-line" style="font-size:${fontSize};">${l}</div>`).join('')}
+      </div>
+      <div class="p-warn-foot">${esc(foot)}</div>
+    </div>
+  `;
+  openPrintWindow(inner, `${dims.w}mm ${dims.h}mm`, 'พิมพ์ป้ายคำเตือน · Vetฉลาก');
+}
+
+function printSingle(){
+  const d = collectMedData();
+  if(!d.drug){ showToast('กรุณาเลือกหรือพิมพ์ชื่อยา', true); return; }
+  const inner = `<div class="p-med-sheet">${medLabelHtml(d)}</div>`;
+  openPrintWindow(inner, '70mm 50mm', 'พิมพ์ฉลากยา · Vetฉลาก');
+}
+function printQueue(){
+  if(queue.length===0) return;
+  const inner = queue.map(d=>`<div class="p-med-sheet">${medLabelHtml(d)}</div>`).join('');
+  openPrintWindow(inner, '70mm 50mm', 'พิมพ์ฉลากยา · Vetฉลาก');
+}
+
+/* ---------------- Init ---------------- */
+function init(){
+  renderTplList();
+  selectTpl(activeTplId);
+  setSize('half');
+  renderEmojiPalette('emojiPaletteWarn');
+  renderEmojiPalette('emojiPaletteTpl');
+  trackEditable('warnBody');
+  trackEditable('tplNewBody');
+  renderDrugSelect();
+  onDrugSelect();
+  renderQueue();
+  document.getElementById('fDate').value = todayIso();
+  applyMedPreviewDims();
+  ['fHospital','fOwner','fPet','fHN','fDate','fDoseAmt','fDoseUnit','fDoseFreq','fEvery','fEveryUnit','fDateFrom','fDateTo','fQty','fQtyUnit','fNote','fDrugCustom'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', updateMedPreview);
+    document.getElementById(id).addEventListener('change', updateMedPreview);
+  });
+  window.addEventListener('resize', ()=>{
+    applySheetDims(document.getElementById('warnSheet'), activeSize);
+    applyMedPreviewDims();
+  });
+}
+init();
+</script>
