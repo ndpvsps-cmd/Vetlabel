@@ -524,9 +524,12 @@ function switchTab(name){
 function applyMedPreviewDims(){
   const frame = document.getElementById('medPreviewFrame');
   const sheet = document.getElementById('medPreview');
+  const wrap = frame.parentElement;
+  const wrapStyle = getComputedStyle(wrap);
+  const padX = (parseFloat(wrapStyle.paddingLeft) || 0) + (parseFloat(wrapStyle.paddingRight) || 0);
   const mmToPx = 3.7795275591;
   const naturalWmm = 70, naturalHmm = 50;
-  const maxWpx = Math.max(140, frame.parentElement.clientWidth - 4);
+  const maxWpx = Math.max(140, wrap.clientWidth - padX - 4);
   const scale = Math.min(2.4, maxWpx / (naturalWmm * mmToPx));
   frame.style.width = (naturalWmm * scale) + 'mm';
   frame.style.height = (naturalHmm * scale) + 'mm';
@@ -862,7 +865,12 @@ function openPrintWindow(innerHtml, pageSizeMm, title){
     <style>@page{ size:${pageSizeMm}; margin:0; } ${PRINT_CSS}</style>
   </head><body>${innerHtml}
   <script>
-    function go(){ try{ window.focus(); window.print(); }catch(e){} }
+    var printed = false;
+    function go(){
+      if(printed) return;
+      printed = true;
+      try{ window.focus(); window.print(); }catch(e){}
+    }
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(go); }
     window.addEventListener('load', go);
     setTimeout(go, 700);
