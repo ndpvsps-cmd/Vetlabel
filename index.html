@@ -1,3 +1,4 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vetฉลาก</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap">
@@ -280,7 +281,7 @@
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   .toast.error{ background:var(--danger); }
 
-</style>
+.topbar,.tabs{flex-wrap:wrap}.forms-layout{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:18px}.forms-controls{padding:18px;display:grid;gap:12px}.forms-controls label{display:grid;gap:5px}.forms-controls textarea{min-height:180px}.forms-preview{padding:20px;min-width:0;overflow-wrap:anywhere;background:white}.form-paper{font-family:Sarabun,sans-serif;color:#111;font-size:11pt;line-height:1.5}.form-paper h2{font-size:16pt;text-align:center;margin:0 0 8px}.form-paper .institution{text-align:center;font-size:10pt;margin-bottom:16px}.form-data{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:16px}.form-data p{margin:0;border-bottom:1px dotted #aaa;padding-bottom:4px}.form-copy{white-space:pre-wrap;margin:12px 0}.organ-options{display:flex;flex-wrap:wrap;gap:10px}.organ-options label{display:flex;align-items:center;gap:5px}@media(max-width:900px){.forms-layout{grid-template-columns:minmax(0,1fr)}}@media print{.form-paper{padding:0}.form-paper p{orphans:3;widows:3}}</style>
 
 <div class="app">
   <div class="topbar">
@@ -293,7 +294,7 @@
     </div>
     <div class="tabs" role="tablist">
       <button class="tab-btn active" id="tabBtnWarn" onclick="switchTab('warn')">⚠ ป้ายคำเตือน</button>
-      <button class="tab-btn" id="tabBtnMed" onclick="switchTab('med')">💊 ฉลากยา</button>
+      <button class="tab-btn" id="tabBtnForms" onclick="switchTab('forms')">📋 สร้างฟอร์มสำเร็จรูป</button><button class="tab-btn" id="tabBtnMed" onclick="switchTab('med')">💊 ฉลากยา</button>
     </div>
   </div>
 
@@ -354,7 +355,7 @@
   </div>
 
   <!-- ============ MEDICATION LABEL TAB ============ -->
-  <div class="panel" id="panelMed">
+  <div class="panel" id="panelForms"><div class="forms-layout"><div class="card forms-controls"><h2 style="margin:0">สร้างฟอร์มสำเร็จรูป</h2><label>เลือกแบบฟอร์ม<select id="formTemplate" onchange="formChoose()"></select></label><div id="formFields" class="forms-controls" style="padding:0"></div><label>ข้อความคำแนะนำ (แก้ไขได้)<textarea id="formInstructions" oninput="formRender()"></textarea></label><label>หมายเหตุเพิ่มเติม<textarea id="formNote" style="min-height:65px" oninput="formRender()"></textarea></label><button class="btn btn-primary" onclick="formPrint()">🖨 พิมพ์ / บันทึก PDF</button><p style="font-size:12px;margin:0">กระดาษ A4 แนวตั้ง • เลือก Save as PDF ในหน้าต่างพิมพ์ได้<br>ตรวจข้อมูลและคำแนะนำก่อนพิมพ์</p></div><div class="card forms-preview"><div id="formPreview" class="form-paper"></div></div></div></div><div class="panel" id="panelMed">
     <div class="med-layout">
       <div class="card">
         <div style="padding:14px 18px 0;"><p class="label-cap">ข้อมูลฉลากยา</p></div>
@@ -559,12 +560,14 @@ let queue = [];
 
 /* ---------------- Tabs ---------------- */
 function switchTab(name){
+ document.getElementById('panelForms').classList.toggle('active',name==='forms');
+ document.getElementById('tabBtnForms').classList.toggle('active',name==='forms');
   document.getElementById('panelWarn').classList.toggle('active', name==='warn');
   document.getElementById('panelMed').classList.toggle('active', name==='med');
   document.getElementById('tabBtnWarn').classList.toggle('active', name==='warn');
   document.getElementById('tabBtnMed').classList.toggle('active', name==='med');
   if(name==='med') applyMedPreviewDims();
-  else applySheetDims(activeSize);
+  else if(name==='warn') applySheetDims(activeSize);
 }
 
 /* Keep the on-screen 70x50mm preview scaled up for legibility, but reserve
@@ -1058,4 +1061,115 @@ function init(){
   });
 }
 init();
+</script>
+
+<script>
+const FORM_TEMPLATES=[{"name":"ใบนัดผ่าตัด.docx","en":false,"kind":"surgery","title":"ใบนัดผ่าตัด","text":"ข้อควรปฏิบัติก่อนนำสัตว์มาผ่าตัดและวางยาสลบ\nงดน้ำและอาหารทุกชนิดก่อนวางยาสลบ ตามระยะเวลาที่กำหนดข้างต้น**\nหากไม่สามารถมาตามเวลาที่นัดได้ ให้โทรศัพท์แจ้งให้ทราบก่อนอย่างน้อย 1 วันทำการ\nหากสัตว์เลี้ยงมีความผิดปกติใดๆ ควรแจ้งให้สัตวแพทย์ทราบทันที\nหากไม่ได้งดน้ำและอาหารมาก่อนกำหนด ต้องแจ้งให้สัตวแพทย์ทราบทันที เพื่อป้องกันความเสี่ยงต่อการวางยาสลบของสัตว์ป่วย\nหากต้องการสอบถามหรือทราบรายละเอียดเพิ่มเติม กรุณาติดต่อตามวันและเวลาราชการเท่านั้น (จันทร์ – ศุกร์ เวลา 08.30น.-16.30น.)\nหากยื่นบัตรล่าช้ากว่ากำหนด 30 นาที จากการนัดหมาย จะต้องทำการนัดหมายใหม่\n*** กรุณายื่นบัตรนัด ให้เจ้าหน้าที่เวชระเบียนทุกครั้ง ในวันนัดผ่าตัด ***\n** โรงพยาบาลสัตว์ คณะสัตวแพทยศาสตร์ มหาวิทยาลัยขอนแก่น เป็นโรงพยาบาลสัตว์เพื่อการเรียนการสอน **"},{"name":"ใบนัดผ่าตัด ENG edited NK.docx","en":true,"kind":"surgery","title":"SURGICAL APPOINTMENT","text":"Note:\nDuration of food and water withholding must be followed as suggested above.\nTo cancel or postpone the appointment, please inform us at least 1 working day before the operation.\nAny abnormalities noticed on animals, please inform the veterinarians\nFor anesthetic and surgical safety reason, animals without food and water withholding must be immediately informed the veterinarians at the arrival.\nFor more information, please contact us on working day times. (Mon – Fri 08:30 - 16:30)\nLate Arrival policy: If the animal arrives more than 30 minutes late of the appointment,  the operation will be cancelled and need to be rescheduled.\n*** Please hand this document to the registration staffs on the appointment date ***\n** Veterinary Teaching Hospital, Khon Kaen University is a veterinary medical school **"},{"name":"ใบนัดอัลตราซาวด์ VTHKKU.docx","en":false,"kind":"us","title":"ใบนัดอัลตราซาวด์","text":"การเตรียมตัวสัตว์\nงดอาหาร อย่างน้อย 6 ชั่วโมง\nสามารถให้สัตว์กินน้ำได้ตามปกติ\nหากไม่สามารถมาตามวันและเวลานัดได้ ต้องทำการนัดหมายล่วงหน้าใหม่"},{"name":"[พันทิศ] ข้อมูลการดูแลสัตว์หลังผ่าตัดศัลย.docx","en":false,"kind":"care","title":"ข้อมูลการดูแลสัตว์หลังผ่าตัดศัลยกรรมกระดูกและข้อ","text":"การกักบริเวณอย่างเข้มงวดมีความจำเป็น และต้องปฏิบัติตามหลัก 2 ข้อดังนี้:\nสัตว์เลี้ยงของท่านสามารถอยู่ในบ้านหรือกำจัดพื้นที่ บนพื้นกันลื่น\nสามารถเดินช้าๆ ในห้อง หรือคอก และกรงที่ไม่มีซี่ถี่\nห้ามวิ่ง กระโดด เล่น หรือเคลื่อนไหวอย่างรุนแรง\nสัตว์เลี้ยงต้อง ใส่สายจูงตลอดเวลาเมื่อออกไปนอกบ้าน เช่น ตอนระบายขับถ่าย\nห้ามพาสัตว์เลี้ยงออกไปเดินเล่นนอกบ้านในช่วงนี้\nข้อมูลทั่วไป\nในช่วงพักฟื้น สามารถกินอาหาร และน้ำได้อย่างปกติ และสามารถเสริมแคลเซียมได้ตามประสงค์ ห้ามกินเครื่องในสัตว์\nห้ามเล่นกับสัตว์เลี้ยงตัวอื่นในบ้านในช่วงกักบริเวณ หากมีสัตว์เลี้ยงหลายตัว ควรแยกสัตว์เลี้ยงที่ผ่าตัดออกจากตัวอื่น\nในช่วง 2 สัปดาห์แรก ควรสังเกตแผลผ่าตัดอย่างใกล้ชิด ไม่ควรเปียกน้ำ และห้ามเลอะสิ่งปฏิกูล เสี่ยงต่อการติดเชื้อ\nหากสัตว์เลียหรือกัดแผล อาจทำให้แผลติดเชื้อหรือไหมหลุดได้ หากพบพฤติกรรมดังกล่าวให้รีบหาวิธีป้องกัน\nโดยทั่วไปกระดูกต้องใช้เวลาอย่างน้อย 6-8 สัปดาห์จึงจะลงน้ำหนัก\nสัตว์เลี้ยงมักจะรู้สึกดีขึ้นก่อนที่กระดูกจะหายสนิท ทำให้ประมาทหรือใช้ขามากเกินไป ซึ่งอาจทำให้เกิดการบาดเจ็บซ้ำ\nจึงต้องปฏิบัติตามคำแนะนำอย่างเคร่งครัดแม้สัตว์จะดูเหมือนดีขึ้นแล้ว\nหากมีสิ่งผิดปกติเกิดขึ้นควรแจ้งสัตวแพทย์ทันที"},{"name":"[EN พันทิศ] ข้อมูลการดูแลสัตว์หลังผ่าตัดศัล.docx","en":true,"kind":"care","title":"Post-Operative Orthopedic Care Instructions for Dogs and Cats","text":"Strict Confinement (Recovery period: 8–12 weeks after surgery)\nStrict confinement is essential throughout the recovery period. Follow these two key principles:\n1. Your pet must stay indoors or in a controlled, restricted area with a non-slip floor.\nSlow walking inside a room, playpen, or crate (with wide spacing between bars) is allowed.\n2. No running, jumping, playing, or any vigorous activity.\nWhen taken outside for urination or defecation, your pet must remain on a leash at all times.\nDo not take your pet for outdoor walks during this period.\nGeneral Instructions\n• During recovery, your pet may eat and drink normally. Calcium supplementation may be given if desired.\nAnimal organs (offal) must not be fed.\n• Do not allow your pet to play with other animals in the household. If there are multiple pets, separate\nthe surgical patient from the others.\n• For the first 2 weeks, monitor the surgical incision closely. Keep it dry and clean. Avoid contamination\nwith dirt, urine, or feces to reduce infection risk.\n• If your pet licks or bites at the incision, infection or suture removal may occur.\nIf this behavior is observed, take immediate measures to prevent access to the wound.\n• Bone healing generally requires at least 6–8 weeks before the limb can bear full weight.\n• Your pet may appear to feel better before the bone is fully healed, which may lead to overuse of the\nlimb and risk of re-injury.\nContinue strict adherence to postoperative instructions even if your pet seems improved.\n• If any abnormalities arise, contact your veterinarian immediately."},{"name":"การดูแล-แมวสวนท่อปัสสาวะ หลังการผ่าตัดต่อท่อปัสาวะ.docx","en":false,"kind":"care","title":"การดูแลแมวสวนท่อปัสสาวะ หลังการผ่าตัดต่อท่อปัสาวะ","text":"ปูแผ่นรองซับเท่านั้น งดวางกระบะทราย เพราะจะทำให้ทรายอุดตันปลายท่อ\nสังเกตุการหยดของน้ำปัสสาวะเสมอ หากไม่มีปัสสาวะออกมา พามา โรงพยาบาล\nสวมคอลลาร์กันเลียตลอด เพื่อป้องกันไม่ให้แมวแทะท่อขาด (หากท่อหลุดก่อนกำหนดมีโอกาสได้ผ่าตัดซ่อมใหม่)\nเปลี่ยนผ้าปิดแผลทุกวัน โดนการเช็ดน้ำเกลือ และแต้มยา เบตาดีนหากแผลชุ่มสามารถเปลี่ยน เช้า - เย็น ได้         หากพบแผลปะทุแนะนำมาทำแผลที่ โรงพยาบาลสัตว์","sourceNotice":""},{"name":"คำแนะนำหลังการผ่าตัด soft tissue.docx","en":false,"kind":"care","title":"คำแนะนำหลังการผ่าตัดกระดูก (ต้นฉบับ soft tissue)","text":"1. ป้อนยาแก่สัตว์ตามที่สัตวแพทย์จัดไว้ ให้ตรงเวลาและป้อนจนหมด หากไม่สามารถป้อนได้ ควรแจ้งให้ ทราบ\n2. จำกัดการใช้ขาของสัตว์ โดยขังกรงไว้อย่างน้อย 2 สัปดาห์\n3. ห้ามสัตว์เลียแผลหรือแทะแผล โดยใส่ปลอกคอกันแทะไว้จนกว่าจะตัดไหม\n4. ในกรณีที่สัตว์ได้รับการพันขาหรือใส่เฝือกชั่วคราวไว้ ควรนำสัตว์มาตรวจตามกำหนดนัด หรือทันทีที่พบว่าผ้าพันแผลเปียกหรือหลุดลุ่ย\n5. หากพบความผิดปกติใดๆ ในขาข้างที่ผ่าตัด เช่น บวมผิดปกติ มีปลายเหล็กที่ดามกระดูกโผล่ออกมา หรือสัตว์มีอาการเดินกะเผลก ควรรีบนำมาพบสัตวแพทย์\n6. ภายหลังการผ่าตัด 3 สัปดาห์ ถ้าสัตว์ยังไม่ยอมใช้ขารับน้ำหนัก ให้นำสัตว์กลับมาตรวจอีกครั้ง\n7. ถ้าสัตว์เดินได้ปกติ ควรนำสัตว์มาตรวจการเชื่อมกระดูก ประมาณ 5 สัปดาห์หลังการผ่าตัด หรือตามสัตวแพทย์แนะนำ","sourceNotice":"ไฟล์ต้นทางชื่อ soft tissue แต่เนื้อหาเป็นคำแนะนำหลังผ่าตัดกระดูก โปรดตรวจสอบก่อนใช้"},{"name":"การดูแลหลังผ่าตัดสุนัข BOAS.pdf","en":false,"kind":"care","title":"การดูแลหลังผ่าตัดสุนัข BOAS","text":"1. การกินอาหาร-น้ำ ควรยกชามให้สูงระดับไหล่ของสุนัข สังเกตการณ์สำลัก หรือไอ หลังจากกิน\n2. ดื่มน้ำเย็นใส่น้ำแข็ง กินอาหารนิ่มและเย็น งดการแทะของแข็ง ในช่วง 2 สัปดาห์หลังผ่าตัด\n3. สังเกตการหายใจของสุนัข หากมีความผิดปกติ เช่น หายใจลำบาก ลิ้นม่วง ให้รีบพามาพบสัตวแพทย์\n4. งดกิจกรรมที่ทำให้สัตว์ตื่นเต้น เห่า ในช่วง 2 สัปดาห์หลังการผ่าตัด\n5. ใช้สายจูงแบบรัดอก แทนการใช้สายจูงจากปลอกคอ เพื่อป้องกันการกระทบกระเทือนบริเวณลำคอ\n6. ยาที่เป็นเม็ด สามารถบดผสมอาหารหรือน้ำหวานให้สุนัขกินได้","sourceNotice":""}];
+const FORM_CSS=".topbar,.tabs{flex-wrap:wrap}.forms-layout{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:18px}.forms-controls{padding:18px;display:grid;gap:12px}.forms-controls label{display:grid;gap:5px}.forms-controls textarea{min-height:180px}.forms-preview{padding:20px;min-width:0;overflow-wrap:anywhere;background:white}.form-paper{font-family:Sarabun,sans-serif;color:#111;font-size:11pt;line-height:1.5}.form-paper h2{font-size:16pt;text-align:center;margin:0 0 8px}.form-paper .institution{text-align:center;font-size:10pt;margin-bottom:16px}.form-data{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:16px}.form-data p{margin:0;border-bottom:1px dotted #aaa;padding-bottom:4px}.form-copy{white-space:pre-wrap;margin:12px 0}.organ-options{display:flex;flex-wrap:wrap;gap:10px}.organ-options label{display:flex;align-items:center;gap:5px}@media(max-width:900px){.forms-layout{grid-template-columns:minmax(0,1fr)}}@media print{.form-paper{padding:0}.form-paper p{orphans:3;widows:3}}";
+const formLabels={owner:['ชื่อเจ้าของ','Owner'],pet:['ชื่อสัตว์','Patient name'],hn:['HN','HN'],age:['อายุ (ระบุเดือน/ปี)','Age (M/Y)'],species:['ชนิดสัตว์','Species'],breed:['พันธุ์','Breed'],sex:['เพศ','Sex'],operation:['นัดศัลยกรรม','Operation'],date:['วันนัด','Appointment date'],time:['เวลายื่นบัตร / เวลานัด','Time'],cost:['ราคาผ่าตัดและวางยาสลบ','Surgical & Anesthetic cost'],appointed:['สัตวแพทย์ผู้นัด','Appointed by'],surgeon:['สัตวแพทย์ผ่าตัด','Surgeon'],food:['งดอาหาร','Food withholding'],water:['งดน้ำ','Water withholding'],other:['ตรวจอื่น ๆ','Other examination']};
+let formKeys=[]; let formImages=[];
+function formChoose(){
+ const t=FORM_TEMPLATES[document.getElementById('formTemplate').value];
+ const old={};document.querySelectorAll('#formFields [data-field]').forEach(x=>old[x.dataset.field]=x.value);
+ formKeys=t.kind==='surgery'?['pet','hn','age','operation','date','time','cost','appointed','surgeon','food','water']:t.kind==='us'?['owner','pet','hn','age','species','breed','sex','date','time','appointed','other']:['owner','pet','hn'];
+ document.getElementById('formFields').innerHTML=formKeys.map(k=>{
+ let options=k==='sex'?['M','Mc','F','Fs']:k==='food'||k==='water'?(t.en?['6-12 hr','4-6 hr','2-4 hr','< 2 hr']:['6-12 ชม','4-6 ชม','2-4 ชม','ไม่งด']):null;
+ let control=options?'<input data-field="'+k+'" list="options-'+k+'" placeholder="เลือกหรือพิมพ์เอง"><datalist id="options-'+k+'">'+options.map(o=>'<option value="'+esc(o)+'">').join('')+'</datalist>':'<input data-field="'+k+'" type="'+(k==='date'?'date':k==='time'?'time':'text')+'">';
+ return '<label>'+formLabels[k][t.en?1:0]+control+'</label>';
+ }).join('');
+ if(t.kind==='us')document.getElementById('formFields').insertAdjacentHTML('beforeend','<div>อวัยวะที่ตรวจ (เลือกได้หลายข้อ)</div><div class="organ-options">'+['ตับ','ม้าม','ไต','ตับอ่อน','ก้อนเนื้อในช่องท้อง','ทางเดินอาหาร','ระบบสืบพันธุ์','กระเพาะปัสสาวะ'].map(o=>'<label><input type="checkbox" data-organ="'+o+'">'+o+'</label>').join('')+'</div>');
+ document.querySelectorAll('#formFields [data-field]').forEach(x=>{if(['owner','pet','hn','age','species','breed','sex'].includes(x.dataset.field))x.value=old[x.dataset.field]||'';x.oninput=formRender;});
+ document.querySelectorAll('[data-organ]').forEach(x=>x.onchange=formRender);
+ let notice=document.getElementById('formSourceNotice');if(!notice){notice=document.createElement('p');notice.id='formSourceNotice';notice.style.cssText='font-size:13px;color:#8a4100;background:#fff4dd;padding:10px;border-radius:8px';document.getElementById('formTemplate').parentElement.after(notice);}notice.textContent=t.sourceNotice||'';notice.hidden=!t.sourceNotice;
+ document.getElementById('formInstructions').value=t.text;document.getElementById('formNote').value='';formRender();if(typeof formImageControls==='function')formImageControls();
+}
+function formRender(){
+ const t=FORM_TEMPLATES[document.getElementById('formTemplate').value];
+ const institution=t.en?'VETERINARY TEACHING HOSPITAL, KHON KAEN UNIVERSITY':'โรงพยาบาลสัตว์ คณะสัตวแพทยศาสตร์ มหาวิทยาลัยขอนแก่น';
+ const rows=formKeys.map(k=>{let v=document.querySelector('[data-field="'+k+'"]').value;if(k==='date'&&v){const a=v.split('-');v=t.en?a[2]+'/'+a[1]+'/'+a[0]:formatThaiDate(v);}return '<p><b>'+formLabels[k][t.en?1:0]+': </b>'+esc(v||'................................')+'</p>';}).join('');
+ const organs=Array.from(document.querySelectorAll('[data-organ]:checked')).map(x=>x.dataset.organ);
+ document.getElementById('formPreview').innerHTML='<h2>'+esc(t.title)+'</h2><div class="institution">'+institution+(t.kind==='surgery'?'<br>Tel. 043-202283, 089-8612277 / 043-009700 ext. 44383':'')+'</div><div class="form-data">'+rows+'</div>'+(organs.length?'<p><b>นัดตรวจอัลตราซาวด์: </b>'+organs.map(esc).join(' • ')+'</p>':'')+(organs.includes('กระเพาะปัสสาวะ')?'<p>งดปัสสาวะก่อนตรวจ 1 ชั่วโมง</p>':'')+'<div class="form-copy">'+esc(document.getElementById('formInstructions').value)+'</div>'+(document.getElementById('formNote').value?'<div class="form-copy"><b>'+(t.en?'Additional notes':'หมายเหตุเพิ่มเติม')+': </b>'+esc(document.getElementById('formNote').value)+'</div>':'');
+}
+function formPrint(){
+ formRender();const w=window.open('','_blank');if(!w){showToast('กรุณาอนุญาตหน้าต่างป๊อปอัปเพื่อพิมพ์',true);return;}
+ const content=document.getElementById('formPreview').innerHTML;
+ w.document.write('<!doctype html><html lang="th"><meta charset="utf-8"><title>Vetฉลาก — แบบฟอร์ม</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap"><style>'+FORM_CSS+' @page{size:A4 portrait;margin:14mm} body{margin:0;background:white}</style><body><main class="form-paper">'+content+'</main></body></html>');w.document.close();
+ let printed=false;const go=async()=>{if(printed)return;printed=true;if(w.document.fonts)await w.document.fonts.ready;await Promise.all(Array.from(w.document.images).map(im=>im.decode().catch(()=>{})));if(!w.closed){w.focus();w.print();}};w.addEventListener('load',go,{once:true});if(w.document.readyState==='complete')go();
+}
+document.getElementById('formTemplate').innerHTML=FORM_TEMPLATES.map((t,i)=>'<option value="'+i+'">'+esc(t.title)+(t.en?' (EN)':' (TH)')+'</option>').join('');formChoose();
+</script><style>.form-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-image-grid figure{margin:0;break-inside:avoid}.form-image-grid img{width:100%;max-height:95mm;object-fit:contain;background:white}.form-image-grid figcaption{font-size:10pt;text-align:center;white-space:pre-wrap}.image-edit{border:1px solid #f3c9de;padding:8px;border-radius:8px;margin:8px 0}.image-edit img{width:80px;height:65px;object-fit:contain}</style><script>
+const imagePrintCSS='.form-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-image-grid figure{margin:0;break-inside:avoid}.form-image-grid img{width:100%;max-height:95mm;object-fit:contain}.form-image-grid figcaption{text-align:center;font-size:10pt;white-space:pre-wrap}';
+function formImageControls(){
+ let box=document.getElementById('formImageControls');if(!box){box=document.createElement('div');box.id='formImageControls';document.getElementById('formInstructions').parentElement.before(box);}
+ box.hidden=FORM_TEMPLATES[document.getElementById('formTemplate').value].kind!=='care';
+ box.innerHTML='<b>ภาพเอกซเรย์ / ภาพประกอบ</b><p style="font-size:12px">แนบ JPG, PNG หรือ WebP ได้หลายภาพ ภาพเก็บเฉพาะในหน้านี้และไม่อัปโหลดออกจากเครื่อง ใช้ภาพที่ส่งออกจากโปรแกรมเอกซเรย์เป็นไฟล์รูปภาพ</p><input type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="formAddImages(this)"><div id="formImageList"></div>';formImageList();
+}
+async function formAddImages(input){
+ for(const f of input.files){if(!['image/jpeg','image/png','image/webp'].includes(f.type)){showToast('รองรับ JPG, PNG และ WebP เท่านั้น',true);continue;}if(f.size>20*1024*1024){showToast('กรุณาเลือกภาพขนาดไม่เกิน 20 MB ต่อภาพ',true);continue;}
+ try{const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f);});const im=new Image();im.src=src;await im.decode();formImages.push({src,caption:''});}catch(e){showToast('ไม่สามารถอ่านภาพ '+f.name,true);}}
+ input.value='';formImageList();formRender();
+}
+function formImageList(){const list=document.getElementById('formImageList');if(!list)return;list.innerHTML=formImages.map((im,i)=>'<div class="image-edit"><img src="'+im.src+'" alt="ภาพประกอบ '+(i+1)+'"><label>คำบรรยายภาพ '+(i+1)+'<input value="'+esc(im.caption)+'" oninput="formImages['+i+'].caption=this.value;formRender()"></label><button type="button" class="btn btn-ghost" onclick="formImages.splice('+i+',1);formImageList();formRender()">ลบภาพ</button></div>').join('');}
+const baseFormRender=formRender;
+formRender=function(){baseFormRender();if(FORM_TEMPLATES[document.getElementById('formTemplate').value].kind==='care'&&formImages.length){document.getElementById('formPreview').insertAdjacentHTML('beforeend','<style>'+imagePrintCSS+'</style><section><h3>'+ (FORM_TEMPLATES[document.getElementById('formTemplate').value].en?'X-rays / Supporting images':'ภาพเอกซเรย์ / ภาพประกอบ')+'</h3><div class="form-image-grid">'+formImages.map((im,i)=>'<figure><img src="'+im.src+'" alt="ภาพประกอบ '+(i+1)+'"><figcaption>'+esc(im.caption)+'</figcaption></figure>').join('')+'</div></section>');}};
+formImageControls();formRender();
+</script>
+<script>// Follow-up appointments belong only to orthopedic aftercare forms.
+let careAppointments = [];
+const carePurposes = [
+  ['ตรวจแผล', 'Wound check'], ['ตัดไหม', 'Suture removal'],
+  ['เอกซเรย์', 'X-ray'], ['เอกซเรย์ติดตามการเชื่อมกระดูก', 'X-ray to assess bone healing']
+];
+function careAppointmentControls() {
+  let box = document.getElementById('careAppointmentControls');
+  if (!box) {
+    box = document.createElement('section'); box.id = 'careAppointmentControls';
+    document.getElementById('formInstructions').parentElement.before(box);
+  }
+  box.hidden = FORM_TEMPLATES[document.getElementById('formTemplate').value].kind !== 'care';
+  box.innerHTML = '<h3>นัดติดตามหลังผ่าตัด</h3><p style="font-size:12px">เพิ่มได้หลายวันนัด และเลือกวัตถุประสงค์ได้หลายข้อในแต่ละนัด</p>' +
+    careAppointments.map((a, i) => '<fieldset style="min-width:0;border:1px solid #f3c9de;border-radius:10px;padding:12px;margin:10px 0"><legend>นัดที่ ' + (i+1) + '</legend>' +
+      '<label>วันนัด<input type="date" value="' + esc(a.date) + '" oninput="careAppointmentSet('+i+',\'date\',this.value)"></label>' +
+      '<label>เวลา (ไม่บังคับ)<input type="time" value="'+esc(a.time)+'" oninput="careAppointmentSet('+i+',\'time\',this.value)"></label>' +
+      '<div class="organ-options" style="margin:10px 0">'+carePurposes.map((p,j)=>'<label><input type="checkbox" '+(a.purposes.includes(j)?'checked':'')+' onchange="careAppointmentToggle('+i+','+j+',this.checked)">'+p[0]+'</label>').join('')+'</div>' +
+      '<label>อื่น ๆ / รายละเอียดเพิ่มเติม<input type="text" value="'+esc(a.other)+'" oninput="careAppointmentSet('+i+',\'other\',this.value)"></label>' +
+      '<button type="button" class="btn btn-ghost" onclick="careAppointments.splice('+i+',1);careAppointmentControls();formRender()">ลบนัดนี้</button></fieldset>').join('') +
+    '<button type="button" class="btn btn-ghost" onclick="careAppointments.push({date:\'\',time:\'\',purposes:[],other:\'\'});careAppointmentControls();formRender()">+ เพิ่มวันนัด</button>';
+}
+function careAppointmentSet(i,key,value) {careAppointments[i][key]=value;formRender();}
+function careAppointmentToggle(i,j,on) {
+  const a=careAppointments[i];a.purposes=on?[...new Set([...a.purposes,j])]:a.purposes.filter(x=>x!==j);formRender();
+}
+function careAppointmentHtml(en) {
+  const active=careAppointments.filter(a=>a.date||a.time||a.purposes.length||a.other.trim());
+  if(!active.length)return '';
+  return '<section style="margin:18px 0"><h3>'+(en?'Follow-up appointments':'นัดติดตามหลังผ่าตัด')+'</h3>'+active.map((a,i)=>{
+    const date=a.date?(en?a.date.split('-').reverse().join('/'):formatThaiDate(a.date)):(en?'Date not specified':'ยังไม่ระบุวันนัด');
+    const purposes=carePurposes.filter((p,j)=>a.purposes.includes(j)).map(p=>p[en?1:0]);
+    if(a.other.trim())purposes.push(a.other.trim());
+    return '<div style="break-inside:avoid;border:1px solid #888;border-radius:6px;padding:9px 12px;margin:8px 0"><b>'+(en?'Appointment ':'นัดที่ ')+(i+1)+' — '+esc(date)+(a.time?' '+esc(a.time)+(en?'':' น.'):'')+'</b><div>'+esc(purposes.join(' • ')||(en?'Purpose not specified':'ยังไม่ระบุวัตถุประสงค์'))+'</div></div>';
+  }).join('')+'</section>';
+}
+const carePreviousRender=formRender;
+formRender=function(){
+  carePreviousRender();
+  const t=FORM_TEMPLATES[document.getElementById('formTemplate').value];
+  if(t.kind==='care'){
+    const preview=document.getElementById('formPreview');
+    const firstCopy=preview.querySelector('.form-copy');
+    if(firstCopy)firstCopy.insertAdjacentHTML('beforebegin',careAppointmentHtml(t.en));
+    else preview.insertAdjacentHTML('beforeend',careAppointmentHtml(t.en));
+  }
+};
+const carePreviousChoose=formChoose;
+formChoose=function(){carePreviousChoose();careAppointmentControls();};
+const carePreviousPrint=formPrint;
+formPrint=function(){
+  const t=FORM_TEMPLATES[document.getElementById('formTemplate').value];
+  if(t.kind==='care'&&careAppointments.some(a=>(a.time||a.purposes.length||a.other.trim())&&!a.date)){
+    showToast('กรุณากำหนดวันนัดให้ครบ หรือลบนัดที่ไม่ต้องการก่อนพิมพ์',true);return;
+  }
+  carePreviousPrint();
+};
+careAppointmentControls();formRender();
 </script>
