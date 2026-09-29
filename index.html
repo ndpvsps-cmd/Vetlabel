@@ -340,7 +340,7 @@
 .form-paper figcaption{padding:7px 0 0;color:#514950}
 @media(max-width:600px){.forms-preview{padding:18px}.form-data{grid-template-columns:minmax(0,1fr)}.form-paper h2{font-size:16pt}}
 @media print{.form-paper{font-size:10.5pt;color:#111}.form-paper h2{font-size:18pt;color:#222}.form-paper h3{color:#222}.form-data{grid-template-columns:repeat(2,minmax(0,1fr))}.form-copy .instruction-item{margin-bottom:7px}.form-paper section h3{break-after:avoid}.form-paper img{max-width:100%}}
-/* Shared screen/print design: inset frame keeps ink away from paper edges. */
+.emoji-row{max-height:155px;overflow-y:auto;padding:3px}.emoji-btn:focus-visible{outline:2px solid #b4106a;outline-offset:2px}/* Shared screen/print design: inset frame keeps ink away from paper edges. */
 .sheet,.p-warn-sheet{border:0!important;border-radius:0;background:#fff;color:#34343b}
 .sheet::before,.p-warn-sheet::before{content:"";position:absolute;inset:5mm;border:.45mm solid #d57c9e;border-radius:5mm;pointer-events:none}
 .sheet::after,.p-warn-sheet::after{content:"";position:absolute;inset:7mm;border:.2mm solid #b9b9c1;border-radius:3.5mm;pointer-events:none}
@@ -399,7 +399,7 @@
           <div class="format-row">
             <button class="fmt-btn" style="font-weight:700;" onclick="setBold()">ตัวหนา</button>
             <button class="fmt-btn" style="font-weight:300;" onclick="setThin()">ตัวบาง</button>
-            <button class="fmt-btn" style="font-style:italic;" onclick="setItalic()">ตัวเอียง</button>
+            <button class="fmt-btn" style="font-style:italic;" onclick="setItalic()">ตัวเอียง</button><button type="button" class="fmt-btn" onmousedown="event.preventDefault()" onclick="setUnderline()" style="text-decoration:underline">ขีดเส้นใต้</button>
             <span class="fmt-divider"></span>
             <button class="fmt-btn" onclick="setFontSize(6)">เล็ก</button>
             <button class="fmt-btn" onclick="setFontSize(11)">ปกติ</button>
@@ -693,6 +693,7 @@ function formatSelection(styleObj){
 }
 function setBold(){ formatSelection({ fontWeight: '700' }); }
 function setItalic(){ formatSelection({ fontStyle: 'italic' }); }
+function setUnderline(){ formatSelection({ textDecoration: 'underline', textUnderlineOffset: '0.12em' }); }
 function setThin(){ formatSelection({ fontWeight: '300' }); }
 function setColor(hex){ formatSelection({ color: hex }); }
 function setFontSize(mm){ formatSelection({ fontSize: mm + 'mm' }); }
@@ -777,7 +778,7 @@ function applySheetDims(size){
 }
 
 /* ---------------- Emoji palette ---------------- */
-const EMOJI_SET = ['⚠️','🚫','🌡️','💧','🍽️','🐾','🐱','🐶','💉','🧤','🩺','⏰','❄️','🚶','😷','🧼','🩹','🔥'];
+const EMOJI_SET = ["⚠️","🚫","⛔","❗","‼️","✅","❌","🔴","🟡","🟢","🐾","🐱","🐶","🐰","🐹","🐭","🐦","🐢","🦎","🐟","💊","💉","🩺","🌡️","🩹","🧤","😷","🧼","🦴","🦷","🫀","🫁","🩸","🔬","🧪","🏥","💧","🚰","🍽️","🥣","🥄","🍼","⏰","🕒","📅","🌅","☀️","🌙","💤","🛏️","🚶","🏠","🔒","✋","👀","❤️","🩷","❄️","🔥","➡️","⬆️","⬇️"];
 let lastEditableTarget = 'warnBody';
 function trackEditable(id){
   document.getElementById(id).addEventListener('focus', ()=> lastEditableTarget = id);
